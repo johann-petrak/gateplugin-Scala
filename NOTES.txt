@@ -1,0 +1,16 @@
+
+Issues with the classpath/classloader: once the interpreter is 
+started, how can we make it aware of any jars the application
+puts on the application classpath?
+
+There are some links that may be relevant to this:
+  https://gist.github.com/404272
+  http://scala-programming-language.1934581.n4.nabble.com/scala-tools-nsc-Interpreter-and-classpath-td2548176.html
+  http://speaking-my-language.blogspot.com/2009/11/embedded-scala-interpreter.html
+  http://suereth.blogspot.com/2009/04/embedding-scala-interpreter.html
+  http://code.google.com/p/lotrepls/
+  http://code.google.com/p/lotrepls/source/browse/trunk/src/com/google/lotrepls/server/interpreters/ScalaInterpreter.java
+  https://github.com/scala/scala/blob/master/test/files/jvm/interpreter.scala
+  https://lampsvn.epfl.ch/trac/scala/wiki/Classpath
+  http://lampsvn.epfl.ch/svn-repos/scala/scala-msil/trunk/src/compiler/scala/tools/util/PathResolver.scala
+  

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ "$GATE_HOME" == "" ] 
+then
+  echo The environment variable GATE_HOME must be set
+  exit 1
+fi
+
+PRG="$0"
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`"/$link"
+  fi
+done
+s=`dirname "$PRG"`/.. 
+pushd $s > /dev/null
+s=`pwd`
+popd > /dev/null
+
+g="$GATE_HOME"
+glog4j=`ls $g/lib/log4j*.jar`
+gjdom=`ls $g/lib/jdom*.jar`
+gxerces=`ls $g/lib/xercesImpl*.jar`
+gnekohtml=`ls $g/lib/nekohtml*.jar`
+getopt=`ls $g/lib/GnuGetOpt*.jar`
+tika=`ls $g/lib/tika-core*.jar`
+CLASSPATH="`$s/echo_javapath`:`$s/echo_scalapath`:$g/bin/gate.jar:$glog4j:$gjdom:$gxerces:$gnekohtml:$g/lib/gate-asm.jar:$tika:$getopt" 
+## echo classpath is "$CLASSPATH"
+scala -deprecation -i "$s/scripts/init.scala" -classpath "$CLASSPATH"  "$@"

@@ -1,0 +1,15 @@
+<!-- creole.xml ScalaPlugin -->
+<!--  johann, 28/7/2010 -->
+<!-- $Id: creole.xml 9992 2008-10-31 16:53:29Z ian_roberts $ -->
+
+<!--
+This file just references the JAR file that contains the compiled resource.
+Configuration is contained in the @CreoleResource annotation on 
+my.package.name.MyClassName.
+-->
+
+<CREOLE-DIRECTORY>
+  <JAR SCAN="true">ScalaPlugin.jar</JAR>
+  <!-- <JAR>lib/scala-compiler.jar</JAR> -->
+  <JAR>lib/scala-library.jar</JAR>
+</CREOLE-DIRECTORY>
