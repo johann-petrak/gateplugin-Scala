@@ -13,4 +13,9 @@ There are some links that may be relevant to this:
   https://github.com/scala/scala/blob/master/test/files/jvm/interpreter.scala
   https://lampsvn.epfl.ch/trac/scala/wiki/Classpath
   http://lampsvn.epfl.ch/svn-repos/scala/scala-msil/trunk/src/compiler/scala/tools/util/PathResolver.scala
-  
+
+More:
+  http://code.google.com/p/lotrepls/source/browse/trunk/src/com/google/lotrepls/server/interpreters/ScalaInterpreter.java
+  http://code.google.com/p/sling-scala/source/browse/trunk/sling-scala/engine/src/main/java/org/apache/sling/scripting/scala/engine/ScalaScriptEngineFactory.java
+  http://code.google.com/p/sling-scala/source/browse/trunk/sling-scala/interpreter/src/main/scala/org/apache/sling/scripting/scala/interpreter/ScalaInterpreter.scala
+  http://permalink.gmane.org/gmane.comp.lang.scala/22243
