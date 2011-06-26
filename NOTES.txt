@@ -28,21 +28,33 @@ More:
   http://permalink.gmane.org/gmane.comp.lang.scala/22243
   
 My thread:
+  http://www.scala-lang.org/node/5898
   http://www.scala-lang.org/node/8002
+  
 
 Even more:
   http://groups.google.com/group/scala-language/tree/browse_frm/thread/1eb149a995e4bbaa/d794ce5a1d7712aa?_done=%2Fgroup%2Fscala-language%2Fbrowse_frm%2Fthread%2F1eb149a995e4bbaa%2Fd794ce5a1d7712aa%3Ftvc%3D1%26&tvc=1
   Scalalab has something: http://code.google.com/p/scalalab/
+ 
+Yet more:
+  http://www.scala-lang.org/node/5152
   
+   
 The main approaches that already work for other languages:
   - KAWA has a Swing Console: http://www.gnu.org/software/kawa/toc.html
     see: http://per.bothner.com/blog/2007/ReplPane/
   - liverepl: https://github.com/djpowell/liverepl
     this shows how to use liverepl with clojure: https://gist.github.com/212785
   - ScalaInterpreterPane: more like an editor with run feature, see: https://github.com/Sciss/ScalaInterpreterPane
+    uses: http://code.google.com/p/jsyntaxpane
+  - ScalIDE: http://code.google.com/p/scalide/wiki/Home
   - jirb_swing may show some tricks
 
-
+Console Swing in general: 
+  http://www.exampledepot.com/egs/javax.swing.text/ta_Console.html
+  http://www.java-forums.org/java-tips/6539-java-swing-class-capturing-output-console.html
+  http://www.comweb.nl/java/Console/Console.html
+  
 
 
 Other stuff:
