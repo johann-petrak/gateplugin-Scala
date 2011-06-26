@@ -8,6 +8,10 @@ Components:
     -> ultimately make the glue code choosable (if we mess up the first time, make it
        it easy to switch to a new approach) 
 
+To get to the actual JAR files, implement Gate.DirectoryInfor.getJarURIs or similar. This should 
+return the list of URIs as used before opening, not what was read from the creole.xml, i.e.
+the URIs after making them absolute.
+
 
 Issues with the classpath/classloader: once the interpreter is 
 started, how can we make it aware of any jars the application
