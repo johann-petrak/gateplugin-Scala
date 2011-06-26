@@ -3,6 +3,11 @@ Issues with the classpath/classloader: once the interpreter is
 started, how can we make it aware of any jars the application
 puts on the application classpath?
 
+See sources:
+  http://lampsvn.epfl.ch/trac/scala/browser/scala/trunk/src/compiler/scala/tools/nsc/interactive
+
+Especially REPL and Global?
+
 There are some links that may be relevant to this:
   http://www.scala-lang.org/node/5152
   https://gist.github.com/404272
@@ -12,6 +17,7 @@ There are some links that may be relevant to this:
   http://code.google.com/p/lotrepls/
   http://code.google.com/p/lotrepls/source/browse/trunk/src/com/google/lotrepls/server/interpreters/ScalaInterpreter.java
   https://github.com/scala/scala/blob/master/test/files/jvm/interpreter.scala
+
   https://lampsvn.epfl.ch/trac/scala/wiki/Classpath
   http://lampsvn.epfl.ch/svn-repos/scala/scala-msil/trunk/src/compiler/scala/tools/util/PathResolver.scala
 
@@ -23,3 +29,24 @@ More:
   
 My thread:
   http://www.scala-lang.org/node/8002
+
+Even more:
+  http://groups.google.com/group/scala-language/tree/browse_frm/thread/1eb149a995e4bbaa/d794ce5a1d7712aa?_done=%2Fgroup%2Fscala-language%2Fbrowse_frm%2Fthread%2F1eb149a995e4bbaa%2Fd794ce5a1d7712aa%3Ftvc%3D1%26&tvc=1
+  Scalalab has something: http://code.google.com/p/scalalab/
+  
+The main approaches that already work for other languages:
+  - KAWA has a Swing Console: http://www.gnu.org/software/kawa/toc.html
+    see: http://per.bothner.com/blog/2007/ReplPane/
+  - liverepl: https://github.com/djpowell/liverepl
+    this shows how to use liverepl with clojure: https://gist.github.com/212785
+  - ScalaInterpreterPane: more like an editor with run feature, see: https://github.com/Sciss/ScalaInterpreterPane
+  - jirb_swing may show some tricks
+
+
+
+
+Other stuff:
+  - check out which Scala testing framework to use
+    ScalaTest: seems to be able to test private methods: http://www.artima.com/weblogs/viewpost.jsp?thread=245958
+
+
