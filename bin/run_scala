@@ -25,4 +25,4 @@ popd > /dev/null
 
 #scala -deprecation -i "$s/bin/init.scala" -cp "$s/lib/ScalaReflection.jar:${GATE_HOME}/bin/gate.jar:${GA}/lib/*:${GATE_HOME}/plugins/Ontology/Ontology.jar:${GATE_HOME}/plugins/Ontology/lib/*:$s/../javalib/*"  "$@"
 
-scala -deprecation -i "$s/bin/init.scala" -cp "$s/lib/ScalaReflection.jar:${GATE_HOME}/bin/gate.jar:${GATE_HOME}/lib/*:$s/../javalib/*" "$@"
+scala -deprecation -i "$s/scripts/init.scala" -cp "$s/lib/ScalaReflection.jar:${GATE_HOME}/bin/gate.jar:${GATE_HOME}/lib/*:$s/../javalib/*" "$@"

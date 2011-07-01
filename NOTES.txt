@@ -1,3 +1,7 @@
+Can we make this switchable between SCALA_HOME and the scala 
+included in lib?
+Probably the default should be being self contained?
+
 Components:
   Tool to bootstrap a Scala/Java mixed language plugin
   Shell script for scala interpreter that uses GATE and ScalaPlugin libs
