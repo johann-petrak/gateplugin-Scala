@@ -14,6 +14,11 @@ import scala.tools.nsc.GenericRunnerSettings
 import scala.tools.nsc.util.BatchSourceFile
 
 // TODO: add a right-click menu entry for generating a script scaffold file
+// TODO: see if we can make it so that fsc is used? 
+// TODO: add an option to cache the compiled script -- this could be done 
+//   by creating a file script.scala.cache.jar. If we do init or reinit and
+//   the cache is newer than the script, just add the jar to the classpath and
+//   import the object in the interpreter instad of compiling it.
 
 @CreoleResource(
   name = "Scala PR",
@@ -98,6 +103,7 @@ class ScalaScriptingPR
     if(!ok) {
       throw new ResourceInstantiationException("Compile error!")
     }
+    imain.setContextClassLoader
     imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
     imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
     imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
@@ -122,6 +128,7 @@ class ScalaScriptingPR
     if(!ok) {
       throw new ResourceInstantiationException("Recompile error!")
     }
+    imain.setContextClassLoader
     imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
     imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
     imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))

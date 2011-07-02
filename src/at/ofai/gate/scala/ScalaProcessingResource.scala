@@ -14,6 +14,7 @@ class ScalaProcessingResource {
   var controller: Controller = null
   var parms: FeatureMap = null
   var ontology: Ontology = null
+  var content: String = ""
   def setInit(c: Corpus, i: String, o: String, p: FeatureMap, 
       onto: Ontology): Unit = {
     corpus = c
@@ -27,11 +28,13 @@ class ScalaProcessingResource {
     if(doc != null) {
       inputAS = doc.getAnnotations(inputASName)
       outputAS = doc.getAnnotations(outputASName)
+      content = doc.getContent.toString
     }
     execute
   }
   def execute: Unit = {
-    throw new GateRuntimeException("please overwrite execute()")
+    throw new GateRuntimeException(
+        "Please overwrite 'execute: Unit' in your 'script' object")
   }
   def controllerStarted(c: Controller): Unit = {
   }
