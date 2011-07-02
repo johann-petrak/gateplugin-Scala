@@ -206,7 +206,7 @@ fi
   scala.tools.nsc.MainGenericRunner \
     -deprecation \
     -i "${SCALA_HOME}"/scripts/initrepl.scala  \
-    -cp "${GATE_HOME}/bin/gate.jar":"${GATE_HOME}"/lib/*
+    -cp "${GATE_HOME}/bin/gate.jar":"${GATE_HOME}"/lib/*:"$SCALA_HOME"/ScalaPlugin.jar
     "$@"
 
 # record the exit status lest it be overwritten:
