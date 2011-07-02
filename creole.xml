@@ -10,6 +10,6 @@ my.package.name.MyClassName.
 
 <CREOLE-DIRECTORY>
   <JAR SCAN="true">ScalaPlugin.jar</JAR>
-  <!-- <JAR>lib/scala-compiler.jar</JAR> -->
+  <JAR>lib/scala-compiler.jar</JAR> 
   <JAR>lib/scala-library.jar</JAR>
 </CREOLE-DIRECTORY>

@@ -13,11 +13,14 @@ class ScalaProcessingResource {
   var outputASName: String = null
   var controller: Controller = null
   var parms: FeatureMap = null
-  def setInit(c: Corpus, i: String, o: String, p: FeatureMap): Unit = {
+  var ontology: Ontology = null
+  def setInit(c: Corpus, i: String, o: String, p: FeatureMap, 
+      onto: Ontology): Unit = {
     corpus = c
     inputASName = i
     outputASName = o
     parms = p
+    ontology = onto
   }
   def setDoc(d: Document): Unit = { doc = d }
   def execute4Interpreter: Unit = {
