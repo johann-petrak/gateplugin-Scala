@@ -13,17 +13,11 @@ import scala.tools.nsc.io.PlainFile
 import scala.tools.nsc.GenericRunnerSettings
 import scala.tools.nsc.util.BatchSourceFile
 
-// TODO: add a right-click menu entry for generating a script scaffold file
-// TODO: see if we can make it so that fsc is used? 
-// TODO: add an option to cache the compiled script -- this could be done 
-//   by creating a file script.scala.cache.jar. If we do init or reinit and
-//   the cache is newer than the script, just add the jar to the classpath and
-//   import the object in the interpreter instad of compiling it.
 
 @CreoleResource(
-  name = "Scala PR",
-  comment = "Use a Scala object as a processing resource and run the object's execute function for each document")
-class ScalaScriptingPR  
+  name = "Scala Script PR",
+  comment = "Use a Scala script as a processing resource")
+class ScalaScriptPR  
   extends AbstractLanguageAnalyser with ControllerAwarePR
 {
   @CreoleParameter(
@@ -68,16 +62,14 @@ class ScalaScriptingPR
   var ontology: Ontology = null
   
   var imain: IMain = null
+  var scriptText: String = ""
   
   @throws(classOf[ResourceInstantiationException])
   override def init: Resource = {
     if(getScriptURL() == null) {
       throw new ResourceInstantiationException("No ScriptURL given!");
     }
-    val script = 
-      new BatchSourceFile(
-          new PlainFile(
-              Files.fileFromURL(getScriptURL()).toString()))
+    scriptText = Files.getString(Files.fileFromURL(getScriptURL()).toString())
     val settings = new GenericRunnerSettings(str => ())
     // this will add the System classpath to the compiler classpath
     settings.usejavacp.value = true
@@ -99,70 +91,40 @@ class ScalaScriptingPR
     }
     imain = new IMain(settings)
     //println("Compiler classpath is: "+imain.compilerClasspath)
-    val ok = imain.compileSources(script)
-    if(!ok) {
-      throw new ResourceInstantiationException("Compile error!")
-    }
     imain.setContextClassLoader
     imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
     imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
     imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
     imain.quietBind(NamedParam("parms","gate.FeatureMap",parms))
     imain.quietBind(NamedParam("ontology","gate.creole.ontology.Ontology",ontology))
-    imain.interpret("script.setInit(corpus,inputAS,outputAS,parms,ontology)")
-    var res = imain.interpret("script.init")
-    if(res == Results.Error) {
-      throw new GateRuntimeException(
-          "Error executing script during reinitialisation")
-    }
     this
   }
   
   override def reInit: Unit = {
-    val script = 
-      new BatchSourceFile(
-          new PlainFile(
-              Files.fileFromURL(getScriptURL()).toString()))
+    scriptText = Files.getString(Files.fileFromURL(getScriptURL()).toString())
     imain.reset
-    val ok = imain.compileSources(script)
-    if(!ok) {
-      throw new ResourceInstantiationException("Recompile error!")
-    }
     imain.setContextClassLoader
     imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
     imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
     imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
     imain.quietBind(NamedParam("parms","gate.FeatureMap",parms))
     imain.quietBind(NamedParam("ontology","gate.creole.ontology.Ontology",ontology))
-    imain.interpret("script.setInit(corpus,inputAS,outputAS,parms,ontology)")
-    var res = imain.interpret("script.reInit")
-    if(res == Results.Error) {
-      throw new GateRuntimeException(
-          "Error executing script during reinitialisation")
-    }
   }
   
   override def execute = {    
     imain.quietBind(NamedParam("doc","gate.Document",document))
-    imain.interpret("script.setDoc(doc)")
-    var res = imain.interpret("script.execute")
+    var res = imain.interpret(scriptText)
     if(res == Results.Error) {
       throw new GateRuntimeException(
-          "Error executing script.execute for document "+document.getName)
+          "Error executing script for document "+document.getName)
     }
   }
   
   override def controllerExecutionStarted(c: Controller): Unit = {
-    imain.quietBind(NamedParam("contr","gate.Controller",c))
-    imain.interpret("script.controllerExecutionStarted4Interpreter(contr)")
+    imain.quietBind(NamedParam("controller","gate.Controller",c))
   }
   override def controllerExecutionFinished(c: Controller): Unit = {
-    imain.quietBind(NamedParam("contr","gate.Controller",c))
-    imain.interpret("script.controllerExecutionFinished4Interpreter(contr)")    
   }
   override def controllerExecutionAborted(c: Controller, t: Throwable): Unit = {
-    imain.quietBind(NamedParam("contr","gate.Controller",c))
-    imain.quietBind(NamedParam("thr","java.lang.Throwable",t))
-    imain.interpret("script.controllerExecutionAborted4Interpreter(contr,thr)")
   }
 }
