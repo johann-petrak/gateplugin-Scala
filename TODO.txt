@@ -1,0 +1,9 @@
+
+Implement a Scala Object Controller and a Scala Script Controller similar to Scala Object PR and Scala Script PR.
+Or, should we merge them into Scala PR and Scala Controller and specify the script type e.g. using OR for the 
+script file init parm?
+
+Both the PR and the controller work with scala code that is in a separate file. 
+Do we need to register persistence -- think not since the only thing that needs to get stored 
+is the file URL.
+The groovy controller stores the script with the controller object.
