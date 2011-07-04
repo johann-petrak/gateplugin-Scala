@@ -50,30 +50,37 @@ public class ScalaTool extends AbstractResource implements ActionsPublisher {
       actions = new ArrayList<Action>();
       // Action 11
       actions.add(
-          new AbstractAction("Scala/Java Plugin Generator", MainFrame.getIcon("groovyConsole")) 
+          new AbstractAction("Scala/Java Plugin Generator", MainFrame.getIcon("/scala-icon")) 
           {
             {
-              putValue(SHORT_DESCRIPTION, "Generate a plugin directory for a mixed Scala/Java plugin");
+              putValue(SHORT_DESCRIPTION, 
+                  "Generate a plugin directory for a mixed Scala/Java plugin");
+              putValue(GateConstants.MENU_PATH_KEY, 
+                  new String[] {"Scala"});            
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {
         }
       });
       actions.add(
-          new AbstractAction("Scala interactive REPL", MainFrame.getIcon("groovyConsole")) 
+          new AbstractAction("Scala Interpreter", MainFrame.getIcon("/scala-icon")) 
           {
             {
               putValue(SHORT_DESCRIPTION, "Run Scala interactively");
+              putValue(GateConstants.MENU_PATH_KEY, 
+                  new String[] {"Scala"});            
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {
         }
       });
       actions.add(
-          new AbstractAction("Scala Editor/Runnger", MainFrame.getIcon("groovyConsole")) 
+          new AbstractAction("Scala Editor/Runner", MainFrame.getIcon("/scala-icon")) 
           {
             {
               putValue(SHORT_DESCRIPTION, "Edit a Scala script or object and run it");
+              putValue(GateConstants.MENU_PATH_KEY, 
+                  new String[] {"Scala"});            
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {

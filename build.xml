@@ -109,7 +109,7 @@
   <!--====================== Targets ============================-->
  
 
-  <target name="scala-compile" depends="prepare">
+  <target name="scala-compile" depends="taskdefs,prepare">
     <scalac srcdir="${src.dir}" 
             destdir="${classes.dir}" 
             classpathref="scalacompile.classpath"
@@ -121,12 +121,12 @@
 
  
   <!-- create build directory structure -->
-  <target name="prepare" depends="taskdefs">
+  <target name="prepare">
     <mkdir dir="${classes.dir}" />
   </target>
 
   <!-- compile the java sources -->
-  <target name="java-compile" depends="scala-compile">
+  <target name="java-only-compile" depends="prepare" >
     <javac classpathref="javacompile.classpath"
            srcdir="${src.dir}"
            destdir="${classes.dir}"
@@ -135,19 +135,23 @@
            source="1.5" />
   </target>
 
+  <target name="java-compile" depends="scala-compile,java-only-compile"/>
+
   <!-- copy resources (anything non-.java) from src to classes -->
   <target name="copy.resources" depends="prepare">
     <copy todir="${classes.dir}">
-      <fileset dir="${src.dir}" excludes="**/*.java" />
+      <fileset dir="${src.dir}" excludes="**/*.java,**/*.scala" />
     </copy>
   </target>
 
   <!-- create the JAR file -->
-  <target name="jar" depends="java-compile, scala-compile, copy.resources" >
+  <target name="jar-only-java" depends="java-only-compile" >
     <jar destfile="${jar.location}"
          update="false"
          basedir="${classes.dir}" />
   </target>
+
+  <target name="jar" depends="java-compile, scala-compile, copy.resources, jar-only-java"/>
 
   <!-- remove the generated .class files -->
   <target name="clean.classes" >

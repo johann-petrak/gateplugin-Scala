@@ -10,6 +10,17 @@
  */
 package at.ofai.gate.scala.gui;
 
+import at.ofai.gate.scala.ScalaCodeDriven;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 /**
  *
  * @author johann
@@ -19,8 +30,38 @@ public class ScalaEditorPanel extends javax.swing.JPanel {
   /** Creates new form ScalaEditorPanel */
   public ScalaEditorPanel() {
     initComponents();
+    initEditor();
   }
-
+  
+  ScalaCodeDriven owner = null;
+  
+  public ScalaEditorPanel(ScalaCodeDriven theOwner) {
+    owner = theOwner;
+    initComponents();
+    initEditor();
+  }
+  
+  RSyntaxTextArea textArea;
+  
+  private void initEditor() {
+    textArea = new RSyntaxTextArea();
+    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SCALA);
+    RTextScrollPane sp = new RTextScrollPane(textArea);
+    sp.setMinimumSize(new Dimension(200,200));
+    //JTextArea t2 = new JTextArea("sdsdsdsdsd");
+    //JScrollPane sp2 = new JScrollPane(t2);
+    //JPanel jPanel3 = new JPanel(new GridLayout(1,1));
+    //jPanel3.add(sp);
+    jPanel2.add(sp) ;
+    //jPanel2.add(new JTextField("dsdsdsdsdsd"));
+    //jPanel2.setLayout(new GridLayout(1,1));
+  }
+  
+  public void setCode(String code) {
+    textArea.setText("def hello: Unit = { println(\"Hello World\" }");
+  }
+  
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -30,17 +71,89 @@ public class ScalaEditorPanel extends javax.swing.JPanel {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
+    jPanel1 = new javax.swing.JPanel();
+    jPanel2 = new javax.swing.JPanel();
+    jButton1 = new javax.swing.JButton();
+    jTextField1 = new javax.swing.JTextField();
+    jButton2 = new javax.swing.JButton();
+
+    jPanel2.setBorder(null);
+    jPanel2.setLayout(new java.awt.GridLayout());
+
+    javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+    jPanel1.setLayout(jPanel1Layout);
+    jPanel1Layout.setHorizontalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+    );
+    jPanel1Layout.setVerticalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+    );
+
+    jButton1.setText("Save");
+    jButton1.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton1ActionPerformed(evt);
+      }
+    });
+
+    jTextField1.setEditable(false);
+    jTextField1.setText("jTextField1");
+
+    jButton2.setText("Save & Use");
+    jButton2.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton2ActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 560, Short.MAX_VALUE)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jButton1)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)))
+        .addContainerGap())
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 362, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jButton1)
+          .addComponent(jButton2)
+          .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addContainerGap())
     );
   }// </editor-fold>//GEN-END:initComponents
+
+  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    // TODO add your handling code here:
+    // Initiate the saving of the file
+  }//GEN-LAST:event_jButton1ActionPerformed
+
+  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    // TODO add your handling code here:
+    // Initiate the Saving of the file and reinitialising the ScalaCodeDriven
+    // object.
+  }//GEN-LAST:event_jButton2ActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton jButton1;
+  private javax.swing.JButton jButton2;
+  private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
+  private javax.swing.JTextField jTextField1;
   // End of variables declaration//GEN-END:variables
 }

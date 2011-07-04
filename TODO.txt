@@ -1,3 +1,15 @@
+Decide which approach to use for code syntax highlighting:
+  http://code.google.com/p/jsyntaxpane/ (used by https://github.com/Sciss/ScalaInterpreterPane)
+    no recent changes
+  http://fifesoft.com/rsyntaxtextarea/ looks good and powerful but no recent changes
+    https://sourceforge.net/projects/rsyntaxtextarea/
+  http://code.google.com/p/scala-edit/: editor using rsyntaxtextarea
+    sources here: https://github.com/kjellwinblad/ScalaEdit
+  https://sourceforge.net/projects/jintilla/
+  what is jhighlight (cannot find home page)
+  
+Decide how to implement the editor/runner and how to implement the REPL
+  http://code.google.com/p/scalide/wiki/Home
 
 Implement a Scala Object Controller and a Scala Script Controller similar to Scala Object PR and Scala Script PR.
 Or, should we merge them into Scala PR and Scala Controller and specify the script type e.g. using OR for the 

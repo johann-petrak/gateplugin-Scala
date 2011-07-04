@@ -24,7 +24,7 @@ import scala.tools.nsc.util.BatchSourceFile
   name = "Scala Object PR",
   comment = "Use a Scala object as a processing resource and run the object's execute function for each document")
 class ScalaObjectPR  
-  extends AbstractLanguageAnalyser with ControllerAwarePR
+  extends AbstractLanguageAnalyser with ControllerAwarePR with ScalaCodeDriven
 {
   @CreoleParameter(
       comment="The URL of the scala file to run")

@@ -18,7 +18,7 @@ import scala.tools.nsc.util.BatchSourceFile
   name = "Scala Script PR",
   comment = "Use a Scala script as a processing resource")
 class ScalaScriptPR  
-  extends AbstractLanguageAnalyser with ControllerAwarePR
+  extends AbstractLanguageAnalyser with ControllerAwarePR with ScalaCodeDriven
 {
   @CreoleParameter(
       comment="The URL of the scala script to run")
