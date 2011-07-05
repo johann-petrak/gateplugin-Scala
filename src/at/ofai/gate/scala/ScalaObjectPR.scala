@@ -20,6 +20,26 @@ import scala.tools.nsc.util.BatchSourceFile
 //   the cache is newer than the script, just add the jar to the classpath and
 //   import the object in the interpreter instad of compiling it.
 
+// TODO: In addition to the classpath we already pass on to the compiler,
+// try to add whatever has been added since GATE was started..
+// There may be to approaches to do this:
+// - figure out which plugins are loaded, then get the URLs of all the JARs
+//   Ideally this would be provided by a method on DirectoryInfo (but we have
+//   to change GATE for that) or we just add all the jars in the root and the
+//   ./lib dirtree
+// - get the URLs of the JARs that are on the current GATE classloader 
+//   (or the threads context class loader?)
+//    lazy val urls = java.lang.Thread.currentThread.getContextClassLoader match {
+//      case cl: java.net.URLClassLoader => cl.getURLs.toList
+//      case _ => error("classloader is not a URLClassLoader")
+//    }
+//    lazy val classpath = urls map {_.toString}
+//    // todo: add to instead or replace classpath.value!
+//    settings.classpath.value = classpath.distinct.mkString(java.io.File.pathSeparator)
+
+ 
+
+
 @CreoleResource(
   name = "Scala Object PR",
   comment = "Use a Scala object as a processing resource and run the object's execute function for each document")
@@ -97,6 +117,23 @@ class ScalaObjectPR
     Utils.getJarFileNames4Plugin(this.getClass.getName()).foreach { x =>
       settings.classpath.append(x)
     }
+    
+    // get the classpath from the Thread context class loader
+    lazy val contextClUrls: List[String] = 
+      java.lang.Thread.currentThread.getContextClassLoader match {
+      case cl: java.net.URLClassLoader => cl.getURLs.toList.map { _.toString }
+      case _ => List[String]()
+    }
+    println("contect CL URLS: "+contextClUrls)
+    
+    // get the classpath from the GATE classloader
+    lazy val gateClUrls: List[String] = 
+      gate.Gate.getClassLoader match {
+      case cl: java.net.URLClassLoader => cl.getURLs.toList.map { _.toString }
+      case _ => List[String]()
+    }
+    println("GATE CL URLS: "+gateClUrls)
+    
     imain = new IMain(settings)
     //println("Compiler classpath is: "+imain.compilerClasspath)
     val ok = imain.compileSources(script)
