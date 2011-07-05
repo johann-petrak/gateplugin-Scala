@@ -4,7 +4,7 @@
 
 <!-- NOTE: the next element may be overwritten by the GUI!!! -->
 <GATECONFIG Known_plugin_path="file:/home/johann/develop/gateplugins-github/gateplugin-scala/"
- Load_plugin_path="file:/home/johann/develop/gateplugins-github/gateplugin-scala/"
+ Load_plugin_path="file:/home/johann/develop/gateplugins-github/gateplugin-scala/;file:/home/johann/gate-top/externals/gate/plugins/Ontology/"
  Look_and_Feel="javax.swing.plaf.metal.MetalLookAndFeel"
  Main_frame_height="777"
  Main_frame_width="1188"

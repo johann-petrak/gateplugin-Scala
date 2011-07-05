@@ -111,31 +111,34 @@ class ScalaObjectPR
         
         
     //println("The scala.home property is: "+System.getProperty("scala.home"))
+    println("\nThe original classpath: "+settings.classpath)
     
-    //println("The bootclasspath is "+settings.bootclasspath)
+    println("\nThe bootclasspath: "+settings.bootclasspath)
+    println("\nThe javabootclasspath: "+settings.javabootclasspath)
          
     Utils.getJarFileNames4Plugin(this.getClass.getName()).foreach { x =>
       settings.classpath.append(x)
     }
     
     // get the classpath from the Thread context class loader
-    lazy val contextClUrls: List[String] = 
-      java.lang.Thread.currentThread.getContextClassLoader match {
-      case cl: java.net.URLClassLoader => cl.getURLs.toList.map { _.toString }
-      case _ => List[String]()
-    }
-    println("contect CL URLS: "+contextClUrls)
+    val contextClUrls: List[String] = 
+      Utils.getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
+    println("\ncontext CL URLS: "+contextClUrls)
+    
+    contextClUrls.foreach { url => settings.classpath.append(url) }
     
     // get the classpath from the GATE classloader
     lazy val gateClUrls: List[String] = 
-      gate.Gate.getClassLoader match {
-      case cl: java.net.URLClassLoader => cl.getURLs.toList.map { _.toString }
-      case _ => List[String]()
-    }
-    println("GATE CL URLS: "+gateClUrls)
+      Utils.getJarUrls4ClassLoader(gate.Gate.getClassLoader)
+    println("\nGATE CL URLS: "+gateClUrls)
+
+    contextClUrls.foreach { url => settings.classpath.append(url) }
+    
+    // TODO: is this needed at all? what exactly does embeddedDefaults do?
+    settings.embeddedDefaults(gate.Gate.getClassLoader)
     
     imain = new IMain(settings)
-    //println("Compiler classpath is: "+imain.compilerClasspath)
+    println("Compiler classpath is: "+imain.compilerClasspath)
     val ok = imain.compileSources(script)
     if(!ok) {
       throw new ResourceInstantiationException("Compile error!")
@@ -153,30 +156,6 @@ class ScalaObjectPR
           "Error executing script during reinitialisation")
     }
     this
-  }
-  
-  override def reInit: Unit = {
-    val script = 
-      new BatchSourceFile(
-          new PlainFile(
-              Files.fileFromURL(getScriptURL()).toString()))
-    imain.reset
-    val ok = imain.compileSources(script)
-    if(!ok) {
-      throw new ResourceInstantiationException("Recompile error!")
-    }
-    imain.setContextClassLoader
-    imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
-    imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
-    imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
-    imain.quietBind(NamedParam("parms","gate.FeatureMap",parms))
-    imain.quietBind(NamedParam("ontology","gate.creole.ontology.Ontology",ontology))
-    imain.interpret("script.setInit(corpus,inputAS,outputAS,parms,ontology)")
-    var res = imain.interpret("script.reInit")
-    if(res == Results.Error) {
-      throw new GateRuntimeException(
-          "Error executing script during reinitialisation")
-    }
   }
   
   override def execute = {    

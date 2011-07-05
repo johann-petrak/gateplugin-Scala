@@ -43,7 +43,6 @@ class ScalaProcessingResource {
   def controllerAborted(c: Controller, t: Throwable): Unit = {
   }
   def init: Unit = { }
-  def reInit: Unit = { init }
   def cleanup: Unit = {  }
   
   def controllerExecutionStarted4Interpreter(c: Controller): Unit = { 

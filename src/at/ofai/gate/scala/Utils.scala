@@ -26,5 +26,14 @@ object Utils {
       Gate.getCreoleRegister().get(pluginClassName).getXmlFileUrl()
     gate.util.Files.fileFromURL(creoleFileURL).getParentFile();    
   }
+  
+  def getJarUrls4ClassLoader(cl: ClassLoader): List[String] = {
+    lazy val theUrls: List[String] = 
+      java.lang.Thread.currentThread.getContextClassLoader match {
+      case cl: java.net.URLClassLoader => cl.getURLs.toList.map { _.toString }
+      case _ => List[String]()
+    }
+    theUrls
+  }
     
 }
