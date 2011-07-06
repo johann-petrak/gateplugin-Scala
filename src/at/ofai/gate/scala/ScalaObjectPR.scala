@@ -37,7 +37,16 @@ import scala.tools.nsc.util.BatchSourceFile
 //    // todo: add to instead or replace classpath.value!
 //    settings.classpath.value = classpath.distinct.mkString(java.io.File.pathSeparator)
 
- 
+// TODO: factor out the code that will be common to all classes that use
+// scala scripting/compilation
+// This includes the possibility to listen for the following events:
+// - script has been reloaded (url,content): for the editor to refresh content
+// - script has been successfully compiled
+// - script had error on compile (error output)
+// - error on interpret (command,error output)
+// TODO: refactor so that loading and compiling is a separate function that
+// gets called from init, but can alos get called from elsewhere (e.g. the 
+// gui editor) -> into parent class/trait!
 
 
 @CreoleResource(
