@@ -9,7 +9,7 @@ package at.ofai.gate.scala
 // interpret, bind etc.
 // 
 trait ScalaEmbeddedListener {
-  def compiled(source: java.io.File, result: InterpreterResult): Unit = { }
-  def interpreted(content: String, source: AnyRef, result: InterpreterResult) = { }
-  def bound(name: String, typename: String, value: Any, result: InterpreterResult)
+  def compiled(source: java.io.File, result: ScalaEmbeddedResult): Unit = { }
+  def interpreted(content: String, source: AnyRef, result: ScalaEmbeddedResult) = { }
+  def bound(name: String, typename: String, value: Any, result: ScalaEmbeddedResult)
 }

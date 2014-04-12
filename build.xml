@@ -110,13 +110,14 @@
  
 
   <target name="scala-compile" depends="taskdefs,prepare">
-    <scalac srcdir="${src.dir}" 
+    <fsc srcdir="${src.dir}" 
             destdir="${classes.dir}" 
             classpathref="scalacompile.classpath"
+            deprecation="true"
             force="changed">
       <include name="**/*.scala"/>
       <include name="**/*.java"/>
-    </scalac>
+    </fsc>
   </target>
 
  

@@ -87,7 +87,7 @@ trait ScalaEmbedded {
       val what = new BatchSourceFile(new PlainFile(file))
       val result = new ScalaEmbeddedResult()
       ourOutputStream.reset
-      val isOk = imain.compileSources(script)
+      val isOk = interpreter.compileSources(what)
       result.isError = isOk
       result.message = ourOutputStream.toString
       ourOutputStream.reset
@@ -95,7 +95,7 @@ trait ScalaEmbedded {
     }
   }
   
-  def fireCompiledEvent(what: File, result: ScalaEmbeddedResult) = {
+  def fireCompiledEvent(what: java.io.File, result: ScalaEmbeddedResult) = {
     listeners.foreach { _.compiled(what, result)}
   }
   def fireInterpretedEvent(what: String, source: AnyRef, result: ScalaEmbeddedResult) = {
