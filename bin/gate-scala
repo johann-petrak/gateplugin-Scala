@@ -204,7 +204,7 @@ fi
   -Denv.emacs="$EMACS" \
   $CYGWIN_JLINE_TERMINAL \
   scala.tools.nsc.MainGenericRunner \
-    -deprecation \
+    -deprecation -Yrepl-sync \
     -i "${SCALA_HOME}"/scripts/initrepl.scala  \
     -cp "${GATE_HOME}/bin/gate.jar":"${GATE_HOME}"/lib/*:"$SCALA_HOME"/ScalaPlugin.jar
     "$@"
