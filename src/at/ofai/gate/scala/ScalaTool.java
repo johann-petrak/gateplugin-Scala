@@ -60,6 +60,7 @@ public class ScalaTool extends AbstractResource implements ActionsPublisher {
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {
+          System.out.println("Should now start the Plugin Generator");
         }
       });
       actions.add(
@@ -72,6 +73,7 @@ public class ScalaTool extends AbstractResource implements ActionsPublisher {
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {
+          System.out.println("Should now start the interactive Interpreter");
         }
       });
       actions.add(
@@ -84,6 +86,7 @@ public class ScalaTool extends AbstractResource implements ActionsPublisher {
             }
         private static final long serialVersionUID = 1L;
         public void actionPerformed(ActionEvent evt) {
+          System.out.println("Should now start the editor/runner");
         }
       });
     }

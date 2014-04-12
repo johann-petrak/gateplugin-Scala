@@ -2,37 +2,13 @@
   <urlList class="gate.util.persistence.CollectionPersistence">
     <localList>
       <gate.util.persistence.PersistenceManager-URLHolder>
-        <urlString>$gatehome$plugins/Ontology/</urlString>
-      </gate.util.persistence.PersistenceManager-URLHolder>
-      <gate.util.persistence.PersistenceManager-URLHolder>
         <urlString>$relpath$../gateplugin-scala/</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
     </localList>
     <collectionType>java.util.ArrayList</collectionType>
   </urlList>
   <application class="gate.util.persistence.CollectionPersistence">
-    <localList>
-      <gate.util.persistence.ConditionalSerialAnalyserControllerPersistence>
-        <strategiesList class="gate.util.persistence.CollectionPersistence">
-          <localList/>
-          <collectionType>java.util.ArrayList</collectionType>
-        </strategiesList>
-        <prList class="gate.util.persistence.CollectionPersistence">
-          <localList/>
-          <collectionType>java.util.ArrayList</collectionType>
-        </prList>
-        <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
-        <resourceName>Conditional Corpus Pipeline_00008</resourceName>
-        <initParams class="gate.util.persistence.MapPersistence">
-          <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-          <localMap/>
-        </initParams>
-        <features class="gate.util.persistence.MapPersistence">
-          <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-          <localMap/>
-        </features>
-      </gate.util.persistence.ConditionalSerialAnalyserControllerPersistence>
-    </localList>
+    <localList/>
     <collectionType>java.util.ArrayList</collectionType>
   </application>
 </gate.util.persistence.GateApplication>
