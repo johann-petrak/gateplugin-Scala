@@ -1,47 +1,27 @@
-﻿<!--======================================================================
+﻿<project name="Scala" basedir="." default="all">
 
-   Build file for ScalaPlugin
-
-   This file will allow you to build your plugin with Ant.  If you do not
-   have an Ant installation of your own, you can use the one supplied with
-   GATE by running
-
-     {gate.home}/bin/ant
-
-   or, on Windows
-     
-     {gate.home}\bin\ant
-
-   where {gate.home} is the directory in which GATE was installed.
-
-   $Id: build.xml 11755 2009-10-23 18:18:15Z johann_p $
-
-=======================================================================-->
-<project name="ScalaPlugin" basedir="." default="all">
-
+  <!-- the properties file has highest priority -->
   <property file="build.properties" />
 
-  <!--=======================================================
-    Property settings.  You should not need to edit these
-    directly, if you need to set a different value for any
-    property you should edit build.properties and override
-    them there.
-  ========================================================-->
-
   <!-- Name of the plugin -->
-  <property name="plugin.name" value="ScalaPlugin"/>
+  <property name="plugin.name" value="Scala"/>
 
   <!-- get environment variables -->
+  <!-- environment variables are used if not already set in
+       the properties file
+  -->
   <property environment="env"/>
-
-  <!-- if GATE_HOME is set it takes preference over ../.. but
-       something set in build.properties will still be preferred -->
   <property name="gate.home" location="${env.GATE_HOME}" />
+  <!-- we cannot use another scala home since we need to know
+      beforehand where scala is installed so the lib can be
+      specified in creole.xml
+  -->
+  <!-- <property name="scala.home" location="${env.SCALA_HOME}" /> -->
 
-  <property name="scala.home" location="${env.SCALA_HOME}" />
-
-  <!-- location of the top-level GATE installation directory -->
+  <!-- if not set in build.properties or the environment variables,
+       fall back ... -->
   <property name="gate.home" location="../.." />
+  <property name="scala.home" location="." />
 
   <!-- location of GATE lib directory - should be inferred from gate.home -->
   <property name="gate.lib" location="${gate.home}/lib" />
@@ -101,8 +81,9 @@
   <target name="taskdefs"> 
     <taskdef resource="scala/tools/ant/antlib.xml">
       <classpath>
-        <pathelement location="${scala.home}/lib/scala-compiler.jar"/>
-        <pathelement location="${scala.home}/lib/scala-library.jar"/>
+        <fileset dir="${scala.home}">
+           <include name="**/*.jar" />
+        </fileset>
       </classpath>
     </taskdef> 
   </target>

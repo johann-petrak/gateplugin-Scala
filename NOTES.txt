@@ -1,0 +1,11 @@
+Standard java scripting available in 2.11
+  https://issues.scala-lang.org/browse/SI-874#comment:11
+  https://github.com/adriaanm/scala/commit/3a30af154e62f5b8a569486b09788c42db2103a6
+
+Check out:
+  http://www.slideshare.net/michid/scala-for-scriptinh
+
+
+old stuff:
+  https://github.com/jsuereth/scala-embedded-interpreter-sample
+  http://suereth.blogspot.co.uk/2009/04/embedding-scala-interpreter.html
