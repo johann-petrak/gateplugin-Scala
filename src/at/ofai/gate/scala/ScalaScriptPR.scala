@@ -72,7 +72,7 @@ class ScalaScriptPR
     scriptText = Files.getString(Files.fileFromURL(getScriptURL()).toString())
     val settings = new GenericRunnerSettings(str => ())
     // this will add the System classpath to the compiler classpath
-    settings.usejavacp.value = true
+    // settings.usejavacp.value = true
     // append all jars in the lib directory of the plugin to 
     // the settings classpath
     
@@ -84,13 +84,14 @@ class ScalaScriptPR
         
     //println("The scala.home property is: "+System.getProperty("scala.home"))
     
-    //println("The bootclasspath is "+settings.bootclasspath)
+    println("The bootclasspath is "+settings.bootclasspath)
          
     Utils.getJarFileNames4Plugin(this.getClass.getName()).foreach { x =>
+      System.out.println("Appending to settings.classpath: "+x)
       settings.classpath.append(x)
     }
     imain = new IMain(settings)
-    //println("Compiler classpath is: "+imain.compilerClasspath)
+    println("Compiler classpath is: "+imain.compilerClasspath)
     imain.setContextClassLoader
     imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
     imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))

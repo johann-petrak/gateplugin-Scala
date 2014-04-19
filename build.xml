@@ -16,7 +16,6 @@
       beforehand where scala is installed so the lib can be
       specified in creole.xml
   -->
-  <!-- <property name="scala.home" location="${env.SCALA_HOME}" /> -->
 
   <!-- if not set in build.properties or the environment variables,
        fall back ... -->

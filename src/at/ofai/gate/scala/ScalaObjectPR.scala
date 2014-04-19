@@ -10,8 +10,10 @@ import java.net.URL
 import java.io._
 import scala.tools.nsc.interpreter._
 import scala.tools.nsc.io.PlainFile
-import scala.tools.nsc.GenericRunnerSettings
+import scala.tools.nsc.Settings
 import scala.tools.nsc.util.BatchSourceFile
+import javax.script.CompiledScript
+import javax.script.ScriptContext
 
 // TODO: add a right-click menu entry for generating a script scaffold file
 // TODO: see if we can make it so that fsc is used? 
@@ -103,15 +105,18 @@ class ScalaObjectPR
     if(getScriptURL() == null) {
       throw new ResourceInstantiationException("No ScriptURL given!");
     }
-    val script = 
-      new BatchSourceFile(
-          new PlainFile(
-              Files.fileFromURL(getScriptURL()).toString()))
-    val settings = new GenericRunnerSettings(str => ())
+    val script = scala.io.Source.fromFile(Files.fileFromURL(getScriptURL())).mkString
+    val settings = new Settings()
     // this will add the System classpath to the compiler classpath
     settings.usejavacp.value = true
     // append all jars in the lib directory of the plugin to 
     // the settings classpath
+    
+    println("Got brand new settings: "+settings)
+    println("Settings are: "+settings)
+    println("Settings.classpath is: "+settings.classpath)
+    println("Settings.bootclasspath is: "+settings.bootclasspath)
+    
     
     var pluginDirName = 
       Utils.getPluginDir(this.getClass.getName()).getCanonicalPath()
@@ -126,44 +131,78 @@ class ScalaObjectPR
     println("\nThe javabootclasspath: "+settings.javabootclasspath)
          
     Utils.getJarFileNames4Plugin(this.getClass.getName()).foreach { x =>
+      println("Appending from jar file names to settings.classpath: "+x)
       settings.classpath.append(x)
+      settings.bootclasspath.append(x)
     }
     
     // get the classpath from the Thread context class loader
     val contextClUrls: List[String] = 
       Utils.getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
-    println("\ncontext CL URLS: "+contextClUrls)
+    //println("\ncontext CL URLS: "+contextClUrls)
     
-    contextClUrls.foreach { url => settings.classpath.append(url) }
+    contextClUrls.foreach { url => 
+      println("appending from context classloader to settings.classpath: "+url)
+      settings.classpath.append(url) 
+      settings.bootclasspath.append(url) 
+    }
     
     // get the classpath from the GATE classloader
-    lazy val gateClUrls: List[String] = 
+    val gateClUrls: List[String] = 
       Utils.getJarUrls4ClassLoader(gate.Gate.getClassLoader)
-    println("\nGATE CL URLS: "+gateClUrls)
+    //println("\nGATE CL URLS: "+gateClUrls)
 
-    contextClUrls.foreach { url => settings.classpath.append(url) }
+    gateClUrls.foreach { url =>
+      println("appending from cgetClUrls to settings.classpath: "+url)
+      settings.classpath.append(url) 
+      settings.bootclasspath.append(url) 
+    }
     
     // TODO: is this needed at all? what exactly does embeddedDefaults do?
-    settings.embeddedDefaults(gate.Gate.getClassLoader)
+    //settings.embeddedDefaults(gate.Gate.getClassLoader)
+    
+    
+    println("All settings: "+settings)
+    println("Settings.classpath is: "+settings.classpath)
+    println("Settings.bootclasspath is: "+settings.bootclasspath)
     
     imain = new IMain(settings)
+    println("The class we made is: "+imain.getClass())
     println("Compiler classpath is: "+imain.compilerClasspath)
-    val ok = imain.compileSources(script)
-    if(!ok) {
-      throw new ResourceInstantiationException("Compile error!")
+    println("Settings.classpath is: "+settings.classpath)
+    //val ret = imain.compileString(script)
+    val ret = imain.compile(script)
+    println("Compilation gave me: "+ret)
+    if(ret.isInstanceOf[CompiledScript]) {
+      println("YES, is instance of compiled script")
+      val cs = ret.asInstanceOf[CompiledScript]
+      val e = cs.eval(null.asInstanceOf[ScriptContext])
+      println("Got evaluation result: "+e+" of type "+e.getClass())
+      if(e.isInstanceOf[ScalaProcessingResource]) {
+        println("YES is a ScalaProcessingResource")
+        val spr = e.asInstanceOf[ScalaProcessingResource]
+        spr.execute
+      } else {
+        println("NO, not a scalaprocessingresource")
+      }
+    } else {
+        println("NO is not instance, but "+ret.getClass())
     }
-    imain.setContextClassLoader
-    imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
-    imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
-    imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
-    imain.quietBind(NamedParam("parms","gate.FeatureMap",parms))
-    imain.quietBind(NamedParam("ontology","gate.creole.ontology.Ontology",ontology))
-    imain.interpret("script.setInit(corpus,inputAS,outputAS,parms,ontology)")
-    var res = imain.interpret("script.init")
-    if(res == Results.Error) {
-      throw new GateRuntimeException(
-          "Error executing script during reinitialisation")
-    }
+      
+    // now try to find the class we just compiled: 
+    
+    //imain.setContextClassLoader
+    //imain.quietBind(NamedParam("corpus","gate.Corpus",corpus))
+    //imain.quietBind(NamedParam("inputAS","java.lang.String",inputAS))
+    //imain.quietBind(NamedParam("outputAS","java.lang.String",outputAS))
+    //imain.quietBind(NamedParam("parms","gate.FeatureMap",parms))
+    //imain.quietBind(NamedParam("ontology","gate.creole.ontology.Ontology",ontology))
+    //imain.interpret("script.setInit(corpus,inputAS,outputAS,parms,ontology)")
+    //var res = imain.interpret("script.init")
+    //if(res == Results.Error) {
+    //  throw new GateRuntimeException(
+    //      "Error executing script during reinitialisation")
+    //}
     this
   }
   
