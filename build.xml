@@ -12,6 +12,13 @@
   -->
   <property environment="env"/>
   <property name="gate.home" location="${env.GATE_HOME}" />
+<<<<<<< HEAD
+=======
+  <!-- we cannot use another scala home since we need to know
+      beforehand where scala is installed so the lib can be
+      specified in creole.xml
+  -->
+>>>>>>> 1a19531f9e77c1a9e6ead49697dd8912587bece3
 
   <!-- if not set in build.properties or the environment variables,
        fall back ... -->
