@@ -1,6 +1,5 @@
 package at.ofai.gate.scala
 
-import scala.reflect.BeanProperty
 import gate._
 import gate.creole._
 import gate.creole.ontology.Ontology
