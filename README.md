@@ -1,1 +1,2 @@
-# This is my README
+GATE plugin for supporting the Scala language
+
