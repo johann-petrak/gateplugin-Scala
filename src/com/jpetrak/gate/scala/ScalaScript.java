@@ -32,10 +32,7 @@ public class ScalaScript {
   public void controllerAborted( Throwable throwable)  { }
   public void initPr() { }
   public void initAll() { }
-  
-  
-  
-  
+  public void cleanupPr() { }
   
   void callExecute() {
     callInitAll();

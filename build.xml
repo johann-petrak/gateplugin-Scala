@@ -90,6 +90,7 @@
             destdir="${classes.dir}" 
             classpathref="scalacompile.classpath"
             deprecation="true"
+            addparams="-feature"
             force="changed">
       <include name="**/*.scala"/>
       <include name="**/*.java"/>

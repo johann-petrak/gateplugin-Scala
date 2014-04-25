@@ -258,6 +258,7 @@ public class ScalaScriptPR
     // We re-set the global initialization indicator so that re-init can be
     // used to test the global init method
     if (scalaProgramClass != null) {
+      scalaProgramClass.cleanupPr();
       scalaProgramClass.resetInitAll();
     }
     init();
@@ -268,6 +269,7 @@ public class ScalaScriptPR
     super.cleanup();
     // make sure the generated class does not hold any references
     if (scalaProgramClass != null) {
+      scalaProgramClass.cleanupPr();
       scalaProgramClass.doc = null;
       scalaProgramClass.controller = null;
       scalaProgramClass.corpus = null;
