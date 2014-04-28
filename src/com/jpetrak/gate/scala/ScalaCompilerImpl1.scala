@@ -36,6 +36,7 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
       //   gate.Gate.getClassLoader
          
       val pluginClUrls: List[String] = getJarUrls4ClassLoader(classOf[ScalaScriptPR].getClassLoader)
+      println("Urls from Plugin classloader: "+pluginClUrls)
       pluginClUrls.foreach { url =>
         if(!knownJars.contains(url)) {
           println("appending from Plugin classloader to settings.classpath: "+url)
@@ -51,6 +52,7 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
       // instead always also process all the parent classloaders, then the 
       // previous code should take care of this automatically
       val gateClUrls: List[String] = getJarUrls4ClassLoader(gate.Gate.getClassLoader)
+      println("Urls from Gate classloader: "+gateClUrls)
       gateClUrls.foreach { url =>
         if(!knownJars.contains(url)) {
           println("appending from Gate.class classloader to settings.classpath: "+url)
@@ -61,6 +63,22 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
           println("Gate.class - ignoring already known "+url)
         }
       }
+      
+      val contextClUrls: List[String] = getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
+      println("Urls from Context classloader: "+contextClUrls)
+      contextClUrls.foreach { url =>
+        if(!knownJars.contains(url)) {
+          println("appending from context classloader to settings.classpath: "+url)
+          settings.classpath.append(url) 
+          settings.bootclasspath.append(url)
+          knownJars += url
+        } else {
+          println("context cl - ignoring already known "+url)
+        }
+      }
+      
+      
+      
       val pluginJars: List[String] = getJarFileNames4pluginDir(pluginDirName)
       pluginJars.foreach { url =>
         if(!knownJars.contains(url)) {
