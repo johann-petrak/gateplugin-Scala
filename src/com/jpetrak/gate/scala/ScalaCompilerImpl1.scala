@@ -144,7 +144,9 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
           filter { _.endsWith(".jar") }.
           map { new java.net.URL(_) }.
           map { gate.util.Files.fileFromURL(_).getCanonicalPath } 
-        case _ => List[String]()
+        case _ =>  
+          println("Not a URL classloader!!")
+          List[String]()
       }
     theUrls
   }

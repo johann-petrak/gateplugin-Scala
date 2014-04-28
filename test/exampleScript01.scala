@@ -12,7 +12,7 @@ override def execute() = {
   System.out.println("The corpus is "+corpus);
   System.out.println("The globalsForAll is: "+getGlobalsForAll);
   System.out.println("The globalsForScript is: "+globalsForPr);
-  System.out.println("DOES IT WORK?");
+  System.out.println("GATE initialized: "+gate.Gate.isInitialised());
 }
 
 override def initAll() = {
