@@ -37,7 +37,7 @@ class ScalaCompilerImpl2 extends ScalaCompiler {
   
   var compiler: IMain = null 
   
-  def init(cl: ClassLoader) = {
+  def init() = {
     this.synchronized {
       println("Creating Scala compiler instance ReflectGlobal")
       //println("Creating settings instance");

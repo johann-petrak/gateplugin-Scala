@@ -34,6 +34,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.io.FileUtils;
 
+// TODO: sync bug-fixes from Java plugin, e.g. updating the sources in the
+// editor window on re-init!
+
 
 @CreoleResource(
         name = "Scala Script PR",
@@ -130,7 +133,6 @@ public class ScalaScriptPR
   // of the two compilers uses and needs classloaders differently.
   // We have to figure out how to do this better!!
   GateClassLoader classloader = null;
-  GateClassLoader initCl;
   
   
   // NOTE: the epilog is specific to the compiler implementation we use
@@ -160,14 +162,14 @@ public class ScalaScriptPR
               classProlog.replaceAll("THECLASSNAME", className) + 
               tmp + 
               scalaCompiler.getClassEpilog().replaceAll("THECLASSNAME", className);
-      System.out.println("Program Source: " + scalaProgramSource);
+      //System.out.println("Program Source: " + scalaProgramSource);
     } catch (IOException ex) {
       System.err.println("Problem reading program from " + scalaProgramUrl);
       ex.printStackTrace(System.err);
       return;
     }
     try {
-      System.out.println("Trying to compile ...");
+      //System.out.println("Trying to compile ...");
       scalaProgramClass = scalaCompiler.compile(className,scalaProgramSource,classloader);
       //scalaProgramClass = (ScalaScript) Gate.getClassLoader().
       //        loadClass("scalascripting." + className).newInstance();
@@ -235,11 +237,7 @@ public class ScalaScriptPR
   protected void tryInitCompiler(boolean reUse) {
     synchronized(compilerSync) {
     if(scalaCompiler == null || !reUse) {
-      if(initCl != null) { Gate.getClassLoader().forgetClassLoader(initCl); }
-      initCl = Gate.getClassLoader().getDisposableClassLoader(
-              "C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
-              this.getClass().getClassLoader(), true);
-      System.out.println("Creating compiler instance");
+      //System.out.println("Creating compiler instance");
       if(getCompilerType() == CompilerType.IMain) {
         scalaCompiler = new ScalaCompilerImpl1();
       } else if(getCompilerType() == CompilerType.ReflectGlobal) {
@@ -248,10 +246,10 @@ public class ScalaScriptPR
         scalaCompiler = new ScalaCompilerImpl1();
         setCompilerType(CompilerType.IMain);  // explicitly set the value so we save it correctly (DEBUG?)
       }
-      System.out.println("Initializing compiler instance");
-      scalaCompiler.init(initCl);
+      //System.out.println("Initializing compiler instance");
+      scalaCompiler.init();
     } else {
-      System.out.println("Compiler already initialized, reusing instance");
+      //System.out.println("Compiler already initialized, reusing instance");
     }
     }
   }

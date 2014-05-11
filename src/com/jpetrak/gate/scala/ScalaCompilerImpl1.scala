@@ -38,15 +38,15 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
   
   var compiler: IMain = null 
   
-  def init(cl: ClassLoader) = {
+  def init() = {
     this.synchronized {
       println("Creating Scala compiler instance IMain")
-      println("Creating settings instance");
+      //println("Creating settings instance");
       val settings = new Settings();
-      println("Have settings: "+settings)
-      println("The original classpath: "+settings.classpath)
-      println("The bootclasspath: "+settings.bootclasspath)
-      println("The javabootclasspath: "+settings.javabootclasspath)
+      //println("Have settings: "+settings)
+      //println("The original classpath: "+settings.classpath)
+      //println("The bootclasspath: "+settings.bootclasspath)
+      //println("The javabootclasspath: "+settings.javabootclasspath)
     
       settings.usejavacp.value = true
       var pluginDirName = 
@@ -58,43 +58,41 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
       var knownJars = Set[String]()
       
          
-      //val urls: List[String] = getJarUrls4ClassLoader(classOf[ScalaScriptPR].getClassLoader)
-      //val urls: List[String] = getJarUrls4ClassLoader(gate.Gate.getClassLoader)
-      //val urls: List[String] = getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
-      
+      var cl = Gate.getClassLoader
       var gatecl: GateClassLoader = null
       if(cl.isInstanceOf[GateClassLoader]) {
         gatecl = cl.asInstanceOf[GateClassLoader]
       } else {
-        throw new GateRuntimeException("Scala compiler init: did not get a GateClassLoader")
+        throw new GateRuntimeException("Scala compiler init: Gate.getClassLoader is not a GateClassLoader")
       }
       
-      var urls = getJarUrls4ClassLoader(classOf[ScalaScriptPR].getClassLoader)
-      urls = urls ++ getJarUrls4ClassLoader(gate.Gate.getClassLoader)
-      urls = urls ++ getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
+      var urls = List[String]()
+      //urls = urls ++ getJarUrls4ClassLoader(classOf[ScalaScriptPR].getClassLoader)
+      //urls = urls ++ getJarUrls4ClassLoader(gate.Gate.getClassLoader)
+      //urls = urls ++ getJarUrls4ClassLoader(java.lang.Thread.currentThread.getContextClassLoader)
       
       urls = urls ++ getJarUrls4GateClassLoader(gatecl)
 
-      println("Urls from GATE classloader: "+urls)
+      //println("Urls from GATE classloader: "+urls)
       urls.foreach { url =>
         if(!knownJars.contains(url)) {
-          println("appending from GATE classloader to settings.classpath: "+url)
+          //println("appending from GATE classloader to settings.classpath: "+url)
           settings.classpath.append(url) 
           settings.bootclasspath.append(url)
           knownJars += url
         } else {
-          println("GATE classloader - ignoring already known "+url)
+          //println("GATE classloader - ignoring already known "+url)
         }
       }
       
       
-      println("Settings initialized, all settings: "+settings)
-      println("Settings.classpath is: "+settings.classpath)
-      println("Settings.bootclasspath is: "+settings.bootclasspath)
+      //println("Settings initialized, all settings: "+settings)
+      //println("Settings.classpath is: "+settings.classpath)
+      //println("Settings.bootclasspath is: "+settings.bootclasspath)
       
-      println("Creating actual compiler instance")
+      //println("Creating actual compiler instance")
       compiler = new IMain(settings);
-      println("Compiler classpath is: "+compiler.compilerClasspath)
+      //println("Compiler classpath is: "+compiler.compilerClasspath)
 
     }    
 
@@ -104,7 +102,7 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
 
   def compile(name: String, source: String, classloader: GateClassLoader): ScalaScript = {
     this.synchronized {
-      println("Trying to compile the source: "+source)
+      //println("Trying to compile the source: "+source)
       var ret: ScalaScript = null
       var obj = compiler.compile(source)
       //println("Compilation gave me: "+obj)
@@ -138,25 +136,26 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
   def getJarUrls4GateClassLoader(cl: GateClassLoader): List[String] = {
     var urlSet = new LinkedHashSet[String]()
     var tmpcl = cl.getParent
-    println("PARENT CL:"+tmpcl)
+    //println("PARENT CL:"+tmpcl)
     var urls: List[String] = List[String]()
     if(tmpcl == null) {
       // do notghin 
     } else if(tmpcl.isInstanceOf[GateClassLoader]) {
-      urls = getJarUrls4GateClassLoader(tmpcl.asInstanceOf[GateClassLoader])
+      //urls = getJarUrls4GateClassLoader(tmpcl.asInstanceOf[GateClassLoader])
+      urls = getJarUrls4ClassLoader(tmpcl)
     } else {
       urls = getJarUrls4ClassLoader(tmpcl)
     }
-    println("URLS FOR PARENT:"+urls)
+    //println("URLS FOR PARENT:"+urls)
     urlSet = urlSet ++ urls
     val children = cl.getChildren
-    println("Got children: "+children.size)
+    //println("Got children: "+children.size)
     children.toArray.foreach { child =>
       if(child.isInstanceOf[GateClassLoader]) {
         tmpcl = child.asInstanceOf[GateClassLoader]
         urls = getJarUrls4ClassLoader(tmpcl)
-        println("Child CL:"+tmpcl)
-        println("URLS FOR child:"+urls)
+        //println("Child CL:"+tmpcl)
+        //println("URLS FOR child:"+urls)
         urls.foreach { url =>
           if(!urlSet.contains(url)) { urlSet.add(url) }
         }
