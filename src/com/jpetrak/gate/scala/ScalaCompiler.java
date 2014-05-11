@@ -3,7 +3,7 @@ package com.jpetrak.gate.scala;
 import gate.util.GateClassLoader;
 
 public interface ScalaCompiler {
-  public void init();
+  public void init(ClassLoader cl);
   /**
    * Compile a script.
    * 
@@ -17,4 +17,7 @@ public interface ScalaCompiler {
    * @return 
    */
   public ScalaScript compile(String name, String source, GateClassLoader classloader);
+  
+  public String getClassEpilog();
+  
 }

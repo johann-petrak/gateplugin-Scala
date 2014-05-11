@@ -92,6 +92,15 @@ public class ScalaScriptPR
   public void setDocument(Document d) {
     document = d;
   }
+  
+  @Optional
+  @CreoleParameter(comment = "which compiler to use, default is IMain")
+  public void setCompilerType(CompilerType parm) {
+    compilerType = parm;
+  }
+  
+  public CompilerType getCompilerType() { return compilerType; }
+  protected CompilerType compilerType;
 
   public FeatureMap getScriptParams() {
     if (scriptParams == null) {
@@ -116,11 +125,17 @@ public class ScalaScriptPR
     "import com.jpetrak.gate.scala.ScalaScript\n";
   String classProlog =
           "class THECLASSNAME extends ScalaScript {\n";
-  // TODO: the epiloc is compiler-approach-specific and should get retrieved
-  // from the compiler instance?
-  //String classEpilog = "}\nnew THECLASSNAME()\n";
-  String classEpilog = "}\n";
 
+  // NOTE: we store two different classloaders here for now, because each
+  // of the two compilers uses and needs classloaders differently.
+  // We have to figure out how to do this better!!
+  GateClassLoader classloader = null;
+  GateClassLoader initCl;
+  
+  
+  // NOTE: the epilog is specific to the compiler implementation we use
+  // so we implement it as a method on the ScalaCompiler class
+  
   // This will try and compile the script. 
   // This is done 
   // = at init() time
@@ -131,7 +146,10 @@ public class ScalaScriptPR
   public void tryCompileScript() {
     String scalaProgramSource;
     String className;
-    GateClassLoader classloader = 
+    if(classloader != null) {
+      Gate.getClassLoader().forgetClassLoader(classloader);
+    }
+    classloader = 
             Gate.getClassLoader().getDisposableClassLoader(
               "C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
               this.getClass().getClassLoader(), true);
@@ -141,7 +159,7 @@ public class ScalaScriptPR
       scalaProgramSource = fileProlog + 
               classProlog.replaceAll("THECLASSNAME", className) + 
               tmp + 
-              classEpilog.replaceAll("THECLASSNAME", className);
+              scalaCompiler.getClassEpilog().replaceAll("THECLASSNAME", className);
       System.out.println("Program Source: " + scalaProgramSource);
     } catch (IOException ex) {
       System.err.println("Problem reading program from " + scalaProgramUrl);
@@ -204,21 +222,37 @@ public class ScalaScriptPR
     } catch (IOException ex) {
       throw new ResourceInstantiationException("Could not read the scala program from " + getScalaProgramUrl(), ex);
     }
-    tryInitCompiler(true);  // true=re-use any existing compiler 
+    // TODO: false for debugging, change to true once everything works!
+    tryInitCompiler(false);  // true=re-use any existing compiler 
     tryCompileScript();
     return this;
   }
 
   static ScalaCompiler scalaCompiler = null;  // guarded by ScalaScriptPR class
+  static Object compilerSync = new Object();
   
-  protected synchronized static void tryInitCompiler(boolean reUse) {
+  
+  protected void tryInitCompiler(boolean reUse) {
+    synchronized(compilerSync) {
     if(scalaCompiler == null || !reUse) {
+      if(initCl != null) { Gate.getClassLoader().forgetClassLoader(initCl); }
+      initCl = Gate.getClassLoader().getDisposableClassLoader(
+              "C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
+              this.getClass().getClassLoader(), true);
       System.out.println("Creating compiler instance");
-      scalaCompiler = new ScalaCompilerImpl2();
+      if(getCompilerType() == CompilerType.IMain) {
+        scalaCompiler = new ScalaCompilerImpl1();
+      } else if(getCompilerType() == CompilerType.ReflectGlobal) {
+        scalaCompiler = new ScalaCompilerImpl2();
+      } else {
+        scalaCompiler = new ScalaCompilerImpl1();
+        setCompilerType(CompilerType.IMain);  // explicitly set the value so we save it correctly (DEBUG?)
+      }
       System.out.println("Initializing compiler instance");
-      scalaCompiler.init();
+      scalaCompiler.init(initCl);
     } else {
       System.out.println("Compiler already initialized, reusing instance");
+    }
     }
   }
   
@@ -380,4 +414,9 @@ public class ScalaScriptPR
     res.updateShared();
     return res;
   }
+  
+  public enum CompilerType {
+    IMain, ReflectGlobal
+  }
+  
 }
