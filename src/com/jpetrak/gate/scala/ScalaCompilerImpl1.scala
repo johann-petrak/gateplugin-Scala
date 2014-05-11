@@ -1,5 +1,6 @@
 package com.jpetrak.gate.scala
 
+import gate.util.GateClassLoader
 import java.io.File
 import gate.Gate
 import scala.tools.nsc.Settings
@@ -104,7 +105,7 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
 
   }
 
-  def compile(source: String): ScalaScript = {
+  def compile(name: String, source: String, classloader: GateClassLoader): ScalaScript = {
     this.synchronized {
       println("Trying to compile the source: "+source)
       var ret: ScalaScript = null

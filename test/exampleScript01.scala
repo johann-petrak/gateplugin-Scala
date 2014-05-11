@@ -1,6 +1,7 @@
 import gate.Utils
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.ConcurrentHashMap
+//import gate.creole.ontology.impl.sesame._
 
 var someField = "text";
 

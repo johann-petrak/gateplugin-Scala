@@ -21,6 +21,7 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.gui.ActionsPublisher;
 import gate.gui.MainFrame;
+import gate.util.GateClassLoader;
 import gate.util.GateRuntimeException;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -115,7 +116,10 @@ public class ScalaScriptPR
     "import com.jpetrak.gate.scala.ScalaScript\n";
   String classProlog =
           "class THECLASSNAME extends ScalaScript {\n";
-  String classEpilog = "}\nnew THECLASSNAME()\n";
+  // TODO: the epiloc is compiler-approach-specific and should get retrieved
+  // from the compiler instance?
+  //String classEpilog = "}\nnew THECLASSNAME()\n";
+  String classEpilog = "}\n";
 
   // This will try and compile the script. 
   // This is done 
@@ -127,6 +131,10 @@ public class ScalaScriptPR
   public void tryCompileScript() {
     String scalaProgramSource;
     String className;
+    GateClassLoader classloader = 
+            Gate.getClassLoader().getDisposableClassLoader(
+              "C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
+              this.getClass().getClassLoader(), true);
     try {
       className = "ScalaScriptClass" + getNextId();
       String tmp = FileUtils.readFileToString(scalaProgramFile, "UTF-8");
@@ -142,7 +150,7 @@ public class ScalaScriptPR
     }
     try {
       System.out.println("Trying to compile ...");
-      scalaProgramClass = scalaCompiler.compile(scalaProgramSource);
+      scalaProgramClass = scalaCompiler.compile(className,scalaProgramSource,classloader);
       //scalaProgramClass = (ScalaScript) Gate.getClassLoader().
       //        loadClass("scalascripting." + className).newInstance();
       scalaProgramClass.globalsForPr = globalsForPr;
@@ -206,7 +214,7 @@ public class ScalaScriptPR
   protected synchronized static void tryInitCompiler(boolean reUse) {
     if(scalaCompiler == null || !reUse) {
       System.out.println("Creating compiler instance");
-      scalaCompiler = new ScalaCompilerImpl1();
+      scalaCompiler = new ScalaCompilerImpl2();
       System.out.println("Initializing compiler instance");
       scalaCompiler.init();
     } else {
