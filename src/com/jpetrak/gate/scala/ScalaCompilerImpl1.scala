@@ -98,7 +98,7 @@ class ScalaCompilerImpl1 extends ScalaCompiler {
 
   }
   
-  def getClassEpilog() = "}\nnew THECLASSNAME()\n"
+  def getClassEpilog() = "}; new THECLASSNAME()"
 
   def compile(name: String, source: String, classloader: GateClassLoader): ScalaScript = {
     this.synchronized {

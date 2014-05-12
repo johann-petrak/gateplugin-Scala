@@ -7,6 +7,7 @@ import gate.creole.AbstractVisualResource;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.GuiType;
 import java.awt.GridLayout;
+import java.io.File;
 
 
 /**
@@ -47,6 +48,10 @@ public class ScalaEditorVR extends AbstractVisualResource
     } else {
       //System.out.println("Not a ScalaCodeDriven: "+((Resource)target).getName());
     }
+  }
+  
+  public void setFile(File file) {
+    panel.setFile(file);
   }
   
   public void setCompilationError() {

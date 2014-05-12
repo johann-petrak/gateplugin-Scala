@@ -26,6 +26,7 @@ import gate.util.GateRuntimeException;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +34,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 
 // TODO: sync bug-fixes from Java plugin, e.g. updating the sources in the
 // editor window on re-init!
@@ -95,9 +97,8 @@ public class ScalaScriptPR
   public void setDocument(Document d) {
     document = d;
   }
-  
-  @Optional
-  @CreoleParameter(comment = "which compiler to use, default is IMain")
+    
+  @CreoleParameter(comment = "which compiler to use, default is IMain", defaultValue="IMain")
   public void setCompilerType(CompilerType parm) {
     compilerType = parm;
   }
@@ -111,6 +112,43 @@ public class ScalaScriptPR
     }
     return scriptParams;
   }
+  
+  @Optional
+  @RunTime
+  @CreoleParameter()
+  public void setResource1(Resource r) {
+    resource1 = r;
+  }
+  public Resource getResource1() {
+    return resource1;
+  }
+  protected Resource resource1;
+  
+  @Optional
+  @RunTime
+  @CreoleParameter()
+  public void setResource2(Resource r) {
+    resource2 = r;
+  }
+  public Resource getResource2() {
+    return resource2;
+  }
+  protected Resource resource2;
+  
+  @Optional
+  @RunTime
+  @CreoleParameter()
+  public void setResource3(Resource r) {
+    resource3 = r;
+  }
+  public Resource getResource3() {
+    return resource3;
+  }
+  protected Resource resource3;
+  
+  
+  
+  
   protected FeatureMap scriptParams;
   Controller controller = null;
   File scalaProgramFile = null;
@@ -124,10 +162,8 @@ public class ScalaScriptPR
     File pluginDir = gate.util.Files.fileFromURL(creoleURL).getParentFile();
     return pluginDir;
   }
-  String fileProlog = "\n" +
-    "import com.jpetrak.gate.scala.ScalaScript\n";
-  String classProlog =
-          "class THECLASSNAME extends ScalaScript {\n";
+  String fileProlog = "import com.jpetrak.gate.scala.ScalaScript";
+  String classProlog = "class THECLASSNAME extends ScalaScript {";
 
   // NOTE: we store two different classloaders here for now, because each
   // of the two compilers uses and needs classloaders differently.
@@ -153,15 +189,31 @@ public class ScalaScriptPR
     }
     classloader = 
             Gate.getClassLoader().getDisposableClassLoader(
-              "C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
+              //"C"+java.util.UUID.randomUUID().toString().replaceAll("-", ""), 
+              scalaProgramUrl.toExternalForm()+System.currentTimeMillis(),
               this.getClass().getClassLoader(), true);
     try {
       className = "ScalaScriptClass" + getNextId();
-      String tmp = FileUtils.readFileToString(scalaProgramFile, "UTF-8");
-      scalaProgramSource = fileProlog + 
-              classProlog.replaceAll("THECLASSNAME", className) + 
-              tmp + 
-              scalaCompiler.getClassEpilog().replaceAll("THECLASSNAME", className);
+      StringBuilder sb = new StringBuilder();
+      scalaProgramLines = new ArrayList<String>();
+      scalaProgramLines.add(fileProlog);      
+      scalaProgramLines.add(classProlog.replaceAll("THECLASSNAME", className));
+      LineIterator it = FileUtils.lineIterator(scalaProgramFile, "UTF-8");
+      try {
+        while (it.hasNext()) {
+          String line = it.nextLine();
+          scalaProgramLines.add(line);
+        }
+      } finally {
+        LineIterator.closeQuietly(it);
+      }
+      scalaProgramLines.add(scalaCompiler.getClassEpilog().replaceAll("THECLASSNAME", className));
+      for (String line : scalaProgramLines) {
+        sb.append(line);
+        sb.append("\n");
+      }
+      scalaProgramSource = sb.toString();
+
       //System.out.println("Program Source: " + scalaProgramSource);
     } catch (IOException ex) {
       System.err.println("Problem reading program from " + scalaProgramUrl);
@@ -178,17 +230,33 @@ public class ScalaScriptPR
       if(registeredEditorVR != null) {
         registeredEditorVR.setCompilationOk();
       }
+      scalaProgramClass.resource1 = resource1;
+      scalaProgramClass.resource2 = resource2;
+      scalaProgramClass.resource3 = resource3;
       isCompileError = false;
       scalaProgramClass.resetInitAll();
     } catch (Exception ex) {
       System.err.println("Problem compiling ScalaScript Class");
+      printScalaProgram(System.err);
       ex.printStackTrace(System.err);
+      if(classloader != null) {
+        Gate.getClassLoader().forgetClassLoader(classloader);
+        classloader = null;
+      }
       isCompileError = true;
       scalaProgramClass = null;
       if(registeredEditorVR != null) {
         registeredEditorVR.setCompilationError();
       }
       return;
+    }
+  }
+  
+  private void printScalaProgram(PrintStream out) {
+    int linenr = 0;
+    for(String line : scalaProgramLines) {
+      linenr++;
+      out.println(linenr+" "+line);
     }
   }
   
@@ -224,8 +292,7 @@ public class ScalaScriptPR
     } catch (IOException ex) {
       throw new ResourceInstantiationException("Could not read the scala program from " + getScalaProgramUrl(), ex);
     }
-    // TODO: false for debugging, change to true once everything works!
-    tryInitCompiler(false);  // true=re-use any existing compiler 
+    tryInitCompiler(true);  // true=re-use any existing compiler 
     tryCompileScript();
     return this;
   }
@@ -301,6 +368,9 @@ public class ScalaScriptPR
       scalaProgramClass.cleanupPr();
       scalaProgramClass.resetInitAll();
     }
+    if(registeredEditorVR != null) {
+      registeredEditorVR.setFile(getScalaProgramFile());
+    }
     init();
   }
 
@@ -320,6 +390,13 @@ public class ScalaScriptPR
       scalaProgramClass.parms = null;
       scalaProgramClass.globalsForPr = null;
       scalaProgramClass.lockForPr = null;
+      scalaProgramClass.resource1 = null;
+      scalaProgramClass.resource2 = null;
+      scalaProgramClass.resource3 = null;
+    }
+    if (classloader != null) {
+      Gate.getClassLoader().forgetClassLoader(classloader);
+      classloader = null;
     }
   }
 
@@ -327,6 +404,9 @@ public class ScalaScriptPR
   public void execute() {
     if (scalaProgramClass != null) {
       try {
+        scalaProgramClass.resource1 = getResource1();
+        scalaProgramClass.resource2 = getResource2();
+        scalaProgramClass.resource3 = getResource3();        
         scalaProgramClass.doc = document;
         scalaProgramClass.controller = controller;
         scalaProgramClass.corpus = corpus;
@@ -344,6 +424,7 @@ public class ScalaScriptPR
         scalaProgramClass.inputAS = null;
         scalaProgramClass.outputAS = null;
       } catch (Exception ex) {
+        printScalaProgram(System.err);
         throw new GateRuntimeException("Could not run program ", ex);
       }
     } else {
@@ -355,8 +436,17 @@ public class ScalaScriptPR
   public void controllerExecutionStarted(Controller controller) {
     this.controller = controller;
     if (scalaProgramClass != null) {
+      scalaProgramClass.resource1 = getResource1();
+      scalaProgramClass.resource2 = getResource2();
+      scalaProgramClass.resource3 = getResource3();    
       scalaProgramClass.controller = controller;
-      scalaProgramClass.controllerStarted();
+      try {
+        scalaProgramClass.controllerStarted();
+      } catch (Exception ex) {
+        System.err.println("Could not run controllerStarted method for script "+getName());
+        printScalaProgram(System.err);
+        ex.printStackTrace(System.err);
+      }
     }
   }
 
@@ -365,7 +455,13 @@ public class ScalaScriptPR
     this.controller = controller;
     if (scalaProgramClass != null) {
       scalaProgramClass.controller = controller;
-      scalaProgramClass.controllerFinished();
+      try {
+        scalaProgramClass.controllerFinished();
+      } catch (Exception ex) {
+        System.err.println("Could not run controllerFinished method for script "+getName());
+        printScalaProgram(System.err);
+        ex.printStackTrace(System.err);
+      }
       scalaProgramClass.controller = null;
       scalaProgramClass.corpus = null;
       scalaProgramClass.parms = null;
@@ -377,7 +473,13 @@ public class ScalaScriptPR
     this.controller = controller;
     if (scalaProgramClass != null) {
       scalaProgramClass.controller = controller;
-      scalaProgramClass.controllerAborted(throwable);
+      try {
+        scalaProgramClass.controllerAborted(throwable);
+      } catch (Exception ex) {
+        System.err.println("Could not run controllerAborted method for script "+getName());
+        printScalaProgram(System.err);
+        ex.printStackTrace(System.err);
+      }
       scalaProgramClass.controller = null;
       scalaProgramClass.corpus = null;
       scalaProgramClass.parms = null;

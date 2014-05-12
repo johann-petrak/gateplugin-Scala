@@ -7,6 +7,7 @@ import gate.Controller;
 import gate.AnnotationSet;
 import gate.Corpus;
 import gate.FeatureMap;
+import gate.Resource;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,6 +17,9 @@ public class ScalaScript {
   public void setGlobalsForAll(ConcurrentMap<String,Object> val) { globalsForAll = val; }
   public ConcurrentMap<String,Object> getGlobalsForAll() { return globalsForAll; }
   public volatile ConcurrentMap<String,Object> globalsForPr = null;  // will be set by JavaSriptingPR
+  public Resource resource1 = null;
+  public Resource resource2 = null;
+  public Resource resource3 = null;
   public Document doc = null;
   public Controller controller = null;
   public Corpus corpus = null;
