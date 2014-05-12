@@ -98,7 +98,7 @@ public class ScalaScriptPR
     document = d;
   }
     
-  @CreoleParameter(comment = "which compiler to use, default is IMain", defaultValue="IMain")
+  @CreoleParameter(comment = "which compiler to use, default is IMain", defaultValue="ReflectGlobal")
   public void setCompilerType(CompilerType parm) {
     compilerType = parm;
   }
