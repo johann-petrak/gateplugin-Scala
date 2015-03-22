@@ -1,0 +1,48 @@
+= add a wizard to create scala plugins and scala apps with gate embedded
+= add bin/gate.sh to start GATE GUI, but with better options and with 
+  a CLI with APU and tools preloaded
+= add bin/gatesh.sh to start a CLI that pre-initializes gate and pre-loads
+  a number of APIs and tools (see below)
+= add bin/gatebatch.sh to run a batch, giving options from the command line
+  and or specifying batch command files (using a DSL)
+
+The API/tools:
+= there should be something in the form of a DSL
+= all globals should be accessible from one singleton object.
+  To get that initial object use implicits to provide something
+  like Gate.gate -> GateGlobalSingleton
+  So we could do 
+  val g = Gate.gate
+  g.loadDocument(new File("asas"))
+  g.loadDocument(thURL), g.loadDocument(theFilenameAsAString)
+  g.saveDocument(fileOrString)  // figure out format from extension
+  g.saveDocument(fileOrString,preConfiguredExporter)
+  g.documents 
+  g.documents(stringOrRegexpForName) 
+  g.corpora 
+  g.corpora(stringOrRegexpForName)
+  etc.
+  g.document(stringOrRegexpForName) -> returns Some(first matching) or Nothing() 
+  
+  g.on(input).run(pipeline).run(p2).to(output1).runMT(p3,20).to(output2)
+  where input and output could be a corpus, directory, stream and input a document
+
+  runMT(p1,20) // run multithreaded
+
+  run(method) // run a method that takes a document (consider currying?)
+
+  run { doc -> code } // run code directly, similar as for each
+
+  g.d("some text") // method to create a "here" document
+  maybe define setters on the document that return the document to simplify things:
+  g.d("some test").name("doc01").docFeature("x","y").docFeatures(features)
+  Similar for annotations and features 
+  doc.anns("name") -> returns an annotation set with that name
+  doc.anns("name").ann("type",from,to,fm).ann("type",from,to,fm) etc.
+  g.fm -> returns a new feature map
+  g.fm.put("as","ff").put("fdfd","ddf")
+  this could also be done like this:
+  g.fm("as","ff","fdfd","ddf") etc. 
+  still another method: 
+  someAnn.fm(....)  
+  
